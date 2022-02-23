@@ -97,13 +97,13 @@
 	    <repository>
 	      <id>nexus</id>
 	      <name>Acada Learning Releases Nexus Repository</name>
-	      <url>http://172.31.18.143:8000/repository/TD-BTSP-Release/</url>
+	      <url>http://18.223.235.161:8000/repository/MACBook-Release/</url>
 	    </repository>
 	    
 	    <snapshotRepository>
 	      <id>nexus</id>
 	      <name>Acada Learning Snapshot Nexus Repository</name>
-	      <url>http://172.31.18.143:8000/repository/TD-BTSP-Snapshot/</url>
+	      <url>http://18.223.235.161:8000/repository/MACBook-Snapshot/</url>
 	    </snapshotRepository>
 	    
 	</distributionManagement>
