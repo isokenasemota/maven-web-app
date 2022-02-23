@@ -1,0 +1,42 @@
+//scripted pipeline
+node ('')
+{
+   def mavenHome = tool name: 'maven3.8.4'
+   stage('1.Initiation'){
+   sh "echo Start building application for MACbook" 
+   }
+   stage('2.GitClone'){
+   sh "echo Cloning from Git Repo"
+   git 'https://github.com/isokenasemota/maven-web-app.git'
+   }
+   stage('3.BuildPackage'){
+   sh "echo Build Package"
+   sh "${mavenHome}/bin/mvn package"
+   }
+   stage('4.CodeQualityTest'){
+   sh "echo running quality test"
+   sh "${mavenHome}/bin/mvn sonar:sonar"
+   }
+   stage('5.NexusBackupArtifacts'){
+   sh "echo backup artifacts"
+   //sh "${mavenHome}/bin/mvn deploy" 
+   }
+   stage('6.DeploytoStaging'){
+   sh "echo deploying to tomcat"
+   deploy adapters: [tomcat9(credentialsId: 'Tomcat-Cred', path: '', url: 'http://18.118.155.140:8080/')], contextPath: null, war: 'target/*war'
+   }
+   stage('7.DeploytoUAT'){
+    sh "echo deploying to staging"
+    timeout(time:7, unit:'DAYS'){
+      input message:'Approval for Production'
+    }
+    }
+    stage('8.DeploytoProd'){
+   sh "echo deploying to Production"
+   deploy adapters: [tomcat9(credentialsId: 'Tomcat-Cred', path: '', url: 'http://18.118.155.140:8080/')], contextPath: null, war: 'target/*war'
+   }
+   stage('9.EmailNotification'){
+    sh "echo sending Email Notification"
+    emailext body: 'This build is successful', recipientProviders: [buildUser()], subject: 'Successful Build', to: 'acada@acadalearning.com'
+}
+}
